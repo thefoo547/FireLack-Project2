@@ -1,6 +1,14 @@
 body {
-    font-family: 'PT Sans', sans-serif;
-}
+  font-family: 'PT Sans', sans-serif; }
 
+main .msgs {
+  height: 80vh;
+  overflow-y: scroll;
+  display: grid; }
+  main .msgs p {
+    font-weight: 400;
+    width: 70%; }
+  main .msgs .income-msg {
+    align-self: flex-start; }
 
 /*# sourceMappingURL=styles.css.map */
