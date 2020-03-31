@@ -1,2 +1,5 @@
 # vscode settings dir
 .vscode/
+# pipenv files
+Pipfile
+Pipfile.lock
