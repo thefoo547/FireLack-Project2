@@ -1,0 +1,50 @@
+{%extends "layout.htm"%}
+
+{%block dependencies%}
+<link rel="stylesheet" href="static/css/main.css">
+<script src="static/js/main.js"></script>
+{%endblock%}
+
+{%block title%}
+Firelack Login
+{%endblock%}
+
+{%block body%}
+<section class="container">
+    <article class="row">
+        <div class="col-lg-6 col-12">
+            <h1>XATROOM</h1>
+        </div>
+        <div class="col-lg-6 col-12">
+            <h3>Get a Username and join (or create) a channel</h3>
+            <form>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="usrname" id="usrname" placeholder="Type a Username">
+                </div>
+                <div class="form-group">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="join-ch" value="option1" checked>
+                        <label class="form-check-label" for="inlineRadio1">Join a Channel</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="create-ch" value="option2">
+                        <label class="form-check-label" for="inlineRadio2">Create a Channel</label>
+                      </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-lg-6 col-12">
+                        <select id="room-cmb" class="form-control" name="room">
+                            <option selected>Choose...</option>
+                            <option>...</option>
+                          </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-12">
+                        <input class="form-control" type="text" name="room" id="room-txt" disabled>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </article>
+</section>
+{%endblock%}
