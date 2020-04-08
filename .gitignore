@@ -1,5 +1,6 @@
 # vscode settings dir
 .vscode/
+__pycache__/
 # pipenv files
 Pipfile
 Pipfile.lock

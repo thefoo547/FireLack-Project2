@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", function(){
-    document.querySelector("#join-ch").onchange = enable_join;
-    document.querySelector("#create-ch").onchange = enable_create;
-    
+    if(document.querySelector("#room-cmb")===null)
+    {
+        document.querySelector("#room-txt").disabled=false; 
+    }
+    else
+    {
+        document.querySelector("#join-ch").onchange = enable_join;
+        document.querySelector("#create-ch").onchange = enable_create;
+    }
 });
 
 function enable_join(){
