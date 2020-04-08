@@ -60,6 +60,22 @@ main {
     }
 }
 
+.notif{
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    .user-notif{
+        color: #4c4c4c;
+        display: block;
+        font-size: 14px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+
+
 .msg-info{
     color: #747474;
     display: block;
@@ -96,6 +112,8 @@ main {
     align-self: center;
     justify-self: center;
 }
+
+
 
 @media only screen
  

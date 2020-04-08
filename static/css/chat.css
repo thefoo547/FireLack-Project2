@@ -58,6 +58,20 @@ main .out-msg {
   width: 100%;
 }
 
+.notif {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.notif .user-notif {
+  color: #4c4c4c;
+  display: block;
+  font-size: 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .msg-info {
   color: #747474;
   display: block;

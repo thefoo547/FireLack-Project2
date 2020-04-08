@@ -1,21 +1,26 @@
 {%extends "layout.htm"%}
 
 {%block dependencies%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <link rel="stylesheet" href="static/css/chat.css">
 <script src="static/js/chat.js"></script>
 {%endblock%} 
 
-{%block title%} Xatroom :{{ room }} {%endblock%}
+{%block title%} Xatroom: {{ room }} {%endblock%}
 
 {%block body%}
 <header class="row justify-content-center">
-    <section class="col-12 heading">
-        <h1>Sala <span id="#room-name">{{ room }}</span></h1>
+    <section class="col-4">
+        <a href="/" class="btn btn-danger" id="exit-btn">Exit room &times;</a>
+    </section>
+    <section class="col-8 heading">
+        <h1>User: <span id="usrname">{{usrname}}</span> at room: <span id="room-name">{{ room }}</span></h1>
     </section>
 </header>
 <main class="row mx-2 justify-content-center">
     <section id="main-pane" class="col-lg-6 col-12">
-        <article class="msgs">
+        <article class="msgs" id="msgs">
 
             <div class="in-msg">
                 <div class="rec-msg">
@@ -35,40 +40,8 @@
                 </div>
             </div>
 
-            <div class="out-msg">
-                <div class="sent-msg">
-                    <div class="sent-msg-w">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quos praesentium blanditiis cupiditate delectus atque expedita numquam omnis eum, veniam in quas dignissimos suscipit exercitationem? Modi libero quam beatae distinctio!</p>
-                        <span class="msg-info">Jon Doe</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="out-msg">
-                <div class="sent-msg">
-                    <div class="sent-msg-w">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quos praesentium blanditiis cupiditate delectus atque expedita numquam omnis eum, veniam in quas dignissimos suscipit exercitationem? Modi libero quam beatae distinctio!</p>
-                        <span class="msg-info">Jon Doe</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="in-msg">
-                <div class="rec-msg">
-                    <div class="rec-msg-w">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quos praesentium blanditiis cupiditate delectus atque expedita numquam omnis eum, veniam in quas dignissimos suscipit exercitationem? Modi libero quam beatae distinctio!</p>
-                        <span class="msg-info">Jon Doe</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="in-msg">
-                <div class="rec-msg">
-                    <div class="rec-msg-w">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quos praesentium blanditiis cupiditate delectus atque expedita numquam omnis eum, veniam in quas dignissimos suscipit exercitationem? Modi libero quam beatae distinctio!</p>
-                        <span class="msg-info">Jon Doe</span>
-                    </div>
-                </div>
+            <div class="notif">
+                <span class="text-center user-notif">Jon Doe</span>
             </div>
 
         </article>
