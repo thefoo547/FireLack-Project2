@@ -1,1 +1,1 @@
-gunicorn --worker-class eventlet -w 1 wsgi:app
+gunicorn -k gevent -w 1 module:app
