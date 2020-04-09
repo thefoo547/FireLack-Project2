@@ -39,18 +39,18 @@ def index():
         # redirect to the previous chat
         return redirect(url_for("chat"))
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.htm", rooms=rooms)
-
-
-@app.route("/chat", methods=["GET", "POST"])
-def chat():
-    #if the user is post to log into a chat
-    if request.method == "POST":
+    if request.method == "GET":
+        return render_template("login.htm", rooms=rooms)
+    else:
         #get the user and the room
         usrname=request.form.get("usrname")
         room=request.form.get("room")
+
+        if usrname=="" or room=="" or usrname is None or room is None:
+            return error("Please fill the form")
+
         #if the room doesn't exist
         try: 
             rooms[room]
@@ -67,16 +67,24 @@ def chat():
         #saving the room and the user in session
         session["usrname"]=usrname
         session["room"]=room
-        #rendering to chatroom
-        return render_template("chat.htm", usrname=session["usrname"], room=session["room"])
+        #go to the chat
+        return redirect(url_for("chat"))
+
+
+@app.route("/chat")
+def chat():
+    try:
+        session["usrname"] or session["room"]
+    except:
+        return error("You are not logged in")
     else:
-        # if the user is not logged in
-        try:
-            session["usrname"] or session["room"]
-        except:
-            return error("You are not logged in")
-        else:
-            return render_template("chat.htm", usrname=session["usrname"], room=session["room"])
+        #getting the messages
+        messages = rooms[session["room"]]["msgs"]
+        return render_template("chat.htm", usrname=session["usrname"], room=session["room"], messages=messages)
+
+@app.errorhandler(404)
+def not_found():
+    return error("404 not found")
 
 def error(msg):
     return render_template("error.htm", message=msg)
@@ -85,8 +93,12 @@ def error(msg):
 @socketio.on("join")
 def join(data):
     #ask for the data
-    usrname = session["usrname"]
+    usrname = data["usrname"]
     room = data["room"]
+    #for the functioning of javascript, i have to check if the user is already in
+    if usrname in rooms[room]["usrs"]:
+        #to not send the message
+        return
     # join room
     join_room(room)
     #add user to the list
@@ -98,7 +110,7 @@ def join(data):
 @socketio.on("leave")
 def leave(data):
     #ask for the data
-    usrname = session["usrname"]
+    usrname = data["usrname"]
     room = data["room"]
     #leave the access to the room
     leave_room(room)
@@ -108,6 +120,9 @@ def leave(data):
     if len(rooms[room]["usrs"]) == 0:
         #remove it
         del rooms[room]
+    #remove the session
+    del session["usrname"]
+    del session["room"]
     print(rooms)
     #emit notification
     emit("new-user", {"msg": usrname + " has left the room."}, room=room)

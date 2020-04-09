@@ -12,7 +12,7 @@
 {%block body%}
 <header class="row justify-content-center">
     <section class="col-4">
-        <a class="btn btn-danger" id="exit-btn">Exit room &times;</a>
+        <a class="btn btn-danger" href="/" id="exit-btn">Exit room &times;</a>
     </section>
     <section class="col-8 heading">
         <h1>User: <span id="usrname">{{usrname}}</span> at room: <span id="room-name">{{ room }}</span></h1>
@@ -21,7 +21,7 @@
 <main class="row mx-2 justify-content-center">
     <section id="main-pane" class="col-lg-6 col-12">
         <article class="msgs" id="msgs">
-
+            <!--
             <div class="in-msg">
                 <div class="rec-msg">
                     <div class="rec-msg-w">
@@ -43,6 +43,17 @@
             <div class="notif">
                 <span class="text-center user-notif">Jon Doe</span>
             </div>
+        -->
+        {% for message in messages %}
+            <div class="in-msg">
+                <div class="rec-msg">
+                    <div class="rec-msg-w">
+                        <p>{{message.msg}}</p>
+                        <span class="msg-info">{{message.usr}}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
 
         </article>
         <article class="type-msg mx-1">
