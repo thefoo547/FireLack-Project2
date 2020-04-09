@@ -18,3 +18,4 @@ python-socketio==4.5.1
 six==1.14.0
 Werkzeug==0.16.1
 wrapt==1.11.2
+eventlet
