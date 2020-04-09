@@ -58,3 +58,11 @@ def leave(data):
     leave_room(room)
     print(usrname, room)
     emit("new-user", {"msg": usrname + " has left the room."}, room=room)
+
+@socketio.on("message")
+def message(data):
+    usr = data["usr"]
+    room = data["room"]
+    msg = data["msg"]
+    print(usr, room, msg)
+    emit("message", {"msg": msg, "usr": usr}, room=room)
