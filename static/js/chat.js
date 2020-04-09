@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function leaveRoom(){
         socket.emit("leave", {'usrname': usrname, 'room':room});
+        window.location.href("/");
     }
 
     function sendMsg(){
