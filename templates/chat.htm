@@ -10,23 +10,46 @@
 {%block title%} Xatroom: {{ room }} {%endblock%}
 
 {%block body%}
-<header class="row justify-content-center">
-    <nav class="navbar navbar-dark bg-dark">
+<header class="mb-2">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <span class="navbar-brand mb-0 h1">Firelack Xatrooms</span>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a href="#" id="navbarDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user mr-1"></i><span id="usrname">{{usrname}}</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a href="/" id="exit-btn"class="dropdown-item"><i class="fa fa-door-open"></i>Exit room</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" id="navbarDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-comments mr-1"></i><span id="room-name">{{room}}</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {%for user in users%}
+                            <a href="#" id="exit-btn"class="dropdown-item"><i class="fa fa-dot-circle"></i>{{user}}</a>
+                        {%endfor%}
+                    </div>
+                </li>
+            </ul>
+        </div>
         <!-- Navbar content -->
     </nav>
-      
+     <!-- 
     <section class="col-4">
         <a class="btn btn-danger" href="/" id="exit-btn">Exit room &times;</a>
     </section>
     <section class="col-8 heading">
         <h1>User: <span id="usrname">{{usrname}}</span> at room: <span id="room-name">{{ room }}</span></h1>
     </section>
+    -->
 </header>
 <main class="row mx-2 justify-content-center">
     <section id="main-pane" class="col-lg-6 col-12">

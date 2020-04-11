@@ -77,7 +77,9 @@ def chat():
     else:
         #getting the messages
         messages = rooms[session["room"]]["msgs"]
-        return render_template("chat.htm", usrname=session["usrname"], room=session["room"], messages=messages)
+        users = rooms[session["room"]]["usrs"]
+        print(users)
+        return render_template("chat.htm", usrname=session["usrname"], room=session["room"], messages=messages, users=users)
 
 @app.errorhandler(404)
 def not_found(e):

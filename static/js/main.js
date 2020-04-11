@@ -23,41 +23,24 @@ document.addEventListener("DOMContentLoaded", function(){
         let room_flag=false;
         let usr = document.querySelector("#usrname-txt").value;
         // if the user is empty
-        if(usr === null || usr == "")
-        {
-            invalidate_field("#usrname-txt", true);
-            usr_flag=true;
-        }
-        //if not its time to check the rooms
-        else
-        {
-            invalidate_field("#usrname-txt",false);
-            usr_flag=false;
-        }
-        //select for the room combobox
+
+        usr_flag = (usr === null || usr == "");
+        invalidate_field("#usrname-txt", usr_flag);
+        
         let r = document.querySelector("#room-cmb");
         let room;
+        // if the combobox dont exists
+        if(r===null)
+        {
+            // only validate for the field
+            room_flag = validate_room_field();
+        }
         //if combobox is disabled
-        if(r.disabled)
+        else if(r.disabled)
         {
             invalidate_field("#room-cmb", false);
             //we will work with the textfield
-            room = document.querySelector("#room-txt").value;
-            //if the textfield is empty
-            if(room === null || room == "")
-            {
-                invalidate_field("#room-txt", true);
-                room_flag=true;
-            }
-            //if not, we will validate the room if it already exists
-            else
-            {    
-                invalidate_field("#room-txt", false);
-                room_flag=validate_room(room);
-                if(room_flag){
-                    invalidate_field("#room-txt", true);
-                }
-            }
+            room_flag = validate_room_field();
         }
         //work with combobox
         else
@@ -71,12 +54,11 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             else
             {
+                //else for valid options, enable
                 invalidate_field("#room-cmb", false);
                 //check if the user is already in the selected room
                 usr_flag=validate_user(usr, room);
-                if(usr_flag){
-                    invalidate_field("#usrname-txt", true); 
-                }
+                invalidate_field("#usrname-txt", usr_flag);
             }
         }
         // if in the overall checking something went wrong
@@ -85,7 +67,8 @@ document.addEventListener("DOMContentLoaded", function(){
             event.preventDefault();
             event.stopPropagation();
         }
-    }, false);
+        return false;
+    });
 });
 
 // enable the join room combobox dropdown
@@ -185,5 +168,22 @@ function invalidate_field(classname, valid){
     else
     {
         document.querySelector(classname).classList.remove("is-invalid");
+    }
+}
+
+function validate_room_field(){
+    room = document.querySelector("#room-txt").value;
+    //if the textfield is empty
+    if(room === null || room == "")
+    {
+        invalidate_field("#room-txt", true);
+        return true;
+    }
+    //if not, we will validate the room if it already exists
+    else
+    {
+        flag = validate_room(room);
+        invalidate_field("#room-txt", flag);
+        return flag;
     }
 }

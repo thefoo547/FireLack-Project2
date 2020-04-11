@@ -37,7 +37,7 @@ Firelack Login
                 <div class="form-row">
                     <div class="form-group col-md-6 col-12">
                         {%if not rooms%}
-                            <input type="text" class="form-control" disabled placeholder="NO ROOMS AVAILABLE">
+                            <input type="text" class="form-control" disabled placeholder="NO ROOMS AVAILABLE" id="#room-txt">
                         {%else%}
                             <select id="room-cmb" class="form-control" name="room" required>
                                 <option selected>Choose...</option>
