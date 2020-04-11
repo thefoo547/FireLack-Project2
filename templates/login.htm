@@ -17,9 +17,12 @@ Firelack Login
         </div>
         <div class="col-md-6 col-12">
             <h3>Get a Username and join (or create) a channel</h3>
-            <form action="/login" method="POST">
+            <form action="/login" method="POST" novalidate class="needs-validation">
                 <div class="form-group">
-                    <input class="form-control" type="text" name="usrname" id="usrname" placeholder="Type a Username">
+                    <input class="form-control" type="text" name="usrname"id="usrname-txt" placeholder="Type a Username" required> 
+                    <div class="invalid-feedback" id="user-val-feedback">
+                        Please write a username!
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="form-check form-check-inline">
@@ -36,16 +39,22 @@ Firelack Login
                         {%if not rooms%}
                             <input type="text" class="form-control" disabled placeholder="NO ROOMS AVAILABLE">
                         {%else%}
-                            <select id="room-cmb" class="form-control" name="room">
+                            <select id="room-cmb" class="form-control" name="room" required>
                                 <option selected>Choose...</option>
                                 {%for room in rooms%}
                                     <option value="{{room}}">{{room}}</option>
                                 {%endfor%}
                             </select>
+                            <div class="invalid-feedback">
+                                Please select a room!
+                            </div>
                         {%endif%}
                     </div>
                     <div class="form-group col-md-6 col-12">
-                        <input class="form-control" type="text" name="room" id="room-txt" disabled>
+                        <input class="form-control" type="text" name="room" id="room-txt" required disabled>
+                        <div class="invalid-feedback" id="room-val-feedback">
+                            Please type a room to create!
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">

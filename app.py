@@ -1,5 +1,5 @@
 #import ext modules
-from flask import Flask, render_template, redirect, url_for, session, request
+from flask import Flask, render_template, redirect, url_for, session, request, jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
@@ -52,9 +52,7 @@ def login():
             return error("Please fill the form")
 
         #if the room doesn't exist
-        try: 
-            rooms[room]
-        except:
+        if room not in rooms:
             '''create a new one, saving a space for
             users and a space for messages'''
             # usrs set, msgs list
@@ -70,7 +68,6 @@ def login():
         #go to the chat
         return redirect(url_for("chat"))
 
-
 @app.route("/chat")
 def chat():
     try:
@@ -83,11 +80,36 @@ def chat():
         return render_template("chat.htm", usrname=session["usrname"], room=session["room"], messages=messages)
 
 @app.errorhandler(404)
-def not_found():
-    return error("404 not found")
+def not_found(e):
+    return error("404 not found"), 404 
 
 def error(msg):
     return render_template("error.htm", message=msg)
+
+#AJAX API routes
+@app.route("/check_user", methods = ["POST"])
+def check_user():
+    #get the data
+    usr = request.form.get("usr")
+    room = request.form.get("room")
+    #validate
+    if room not in rooms:
+        return jsonify({"code": 301})
+    if(usr in rooms[room]["usrs"]):
+        return jsonify({"code": 200, "exists": True})
+    else:
+        return jsonify({"code": 200, "exists": False})
+
+@app.route("/check_room", methods = ["POST"])
+def check():
+    #get the data
+    room = request.form.get("room")
+    #validate
+    if room in rooms:
+        return jsonify({"code": 200, "exists": True})
+    else:
+        return jsonify({"code": 200, "exists": False})
+
     
 # socketio events
 @socketio.on("join")
