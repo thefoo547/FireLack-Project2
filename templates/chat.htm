@@ -3,7 +3,9 @@
 {%block dependencies%}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<link rel="stylesheet" href="static/css/fontello.css">
 <link rel="stylesheet" href="static/css/chat.css">
+<script src="static/js/chat-fe.js"></script>
 <script src="static/js/chat.js"></script>
 {%endblock%} 
 
@@ -12,6 +14,7 @@
 {%block body%}
 <header class="mb-2">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <img src="static/img/firelack-ico.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
         <span class="navbar-brand mb-0 h1">Firelack Xatrooms</span>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,21 +24,25 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     <a href="#" id="navbarDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-user mr-1"></i><span id="usrname">{{usrname}}</span>
+                        <i class="icon-user-outline mr-1"></i>User: <span id="usrname">{{usrname}}</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a href="/" id="exit-btn"class="dropdown-item"><i class="fa fa-door-open"></i>Exit room</a>
+                        <a href="/" id="exit-btn"class="dropdown-item"><i class="icon-logout"></i>Exit room</a>
                     </div>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a href="#" id="navbarDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-comments mr-1"></i><span id="room-name">{{room}}</span>
+                        <i class="icon-chat-empty mr-1"></i>Room: <span id="room-name">{{room}}</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {%for user in users%}
-                            <a href="#" id="exit-btn"class="dropdown-item"><i class="fa fa-dot-circle"></i>{{user}}</a>
-                        {%endfor%}
+                        {%if not users%}
+                            <a href="#" class="dropdown-item">NO USERS YET</a>
+                        {%else%}
+                            {%for user in users%}
+                                <a href="#" id="exit-btn"class="dropdown-item"><i class="icon-circle-notch mr-1"></i>{{user}}</a>
+                            {%endfor%}
+                        {%endif%}
                     </div>
                 </li>
             </ul>
@@ -78,14 +85,25 @@
             </div>
         -->
         {% for message in messages %}
-            <div class="in-msg">
-                <div class="rec-msg">
-                    <div class="rec-msg-w">
-                        <p>{{message.msg}}</p>
-                        <span class="msg-info">{{message.usr}}</span>
+            {%if message.usr == usrname%}
+                <div class="out-msg">
+                    <div class="sent-msg">
+                        <div class="sent-msg-w">
+                            <p>{{message.msg}}</p>
+                            <span class="msg-info">{{message.usr}}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {%else%}
+                <div class="in-msg">
+                    <div class="rec-msg">
+                        <div class="rec-msg-w">
+                            <p>{{message.msg}}</p>
+                            <span class="msg-info">{{message.usr}}</span>
+                        </div>
+                    </div>
+                </div>
+            {%endif%}
         {% endfor %}
 
         </article>
@@ -95,7 +113,7 @@
                     <input type="text" id="msg-txt" name="msg" class="write_msg" placeholder="Write a message">
                 </div>
                 <div class="col-1">
-                    <button type="submit" id="send-btn" class="msg_send_btn mt-1"> <i class="fa fa-paper-plane-o"></i> </button>
+                    <button type="submit" id="send-btn" class="msg_send_btn mt-1"> <i class="icon-paper-plane"></i> </button>
                 </div>
             </div>
         </article>

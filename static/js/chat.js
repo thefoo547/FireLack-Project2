@@ -51,7 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // template processing
         const element = msg_template({"msg": msg, "usr": usr});
         // add to div
-        document.querySelector("#msgs").innerHTML += element;
+        let msg_box = document.querySelector("#msgs");
+        msg_box.innerHTML += element;
+        //scroll on bottom
+        msg_box.scrollTop = msg_box.scrollHeight;
+
     });
 
     //functions

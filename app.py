@@ -120,14 +120,16 @@ def join(data):
     usrname = data["usrname"]
     room = data["room"]
     #for the functioning of javascript, i have to check if the user is already in
-    if usrname in rooms[room]["usrs"]:
-        #to not send the message
-        return
+    
     # join room
     join_room(room)
     #add user to the list
     rooms[room]["usrs"].add(usrname)
     print(rooms)
+    if room in rooms:
+        if usrname in rooms[room]["usrs"]:
+            #to not send the message
+            return
     #emit notification
     emit("new-user", {"msg": usrname + " has joined the room."}, room=room)
 
