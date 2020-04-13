@@ -94,10 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = JSON.parse(String(resp));
                 console.log(resp);
                 console.log(data);
-                let usr_template = Handlebars.compile('<a href="#" id="exit-btn"class="dropdown-item"><i class="icon-circle-notch mr-1"></i>{{user}}</a>');
-                
-                let content;
-                data.array.forEach(user => {
+                let usr_template = Handlebars.compile('<a href="#" id="exit-btn"class="dropdown-item"><i class="icon-circle-notch mr-1"></i>{{user}}</a>'); 
+                let content = "";
+                data.forEach(user => {
                     const element = usr_template({"user": user});
                     content += element;
                     console.log(content);
