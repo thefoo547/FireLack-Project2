@@ -35,7 +35,7 @@
                     <a href="#" id="navbarDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="icon-chat-empty mr-1"></i>Room: <span id="room-name">{{room}}</span>
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-menu" id="user-list" aria-labelledby="navbarDropdown">
                         {%if not users%}
                             <a href="#" class="dropdown-item">NO USERS YET</a>
                         {%else%}

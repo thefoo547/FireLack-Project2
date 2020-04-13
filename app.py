@@ -91,6 +91,7 @@ def error(msg):
 #AJAX API routes
 @app.route("/check_user", methods = ["POST"])
 def check_user():
+    '''Check if a username is already in a room'''
     #get the data
     usr = request.form.get("usr")
     room = request.form.get("room")
@@ -103,7 +104,8 @@ def check_user():
         return jsonify({"code": 200, "exists": False})
 
 @app.route("/check_room", methods = ["POST"])
-def check():
+def check_room():
+    '''Check if a room exists'''
     #get the data
     room = request.form.get("room")
     #validate
@@ -112,6 +114,18 @@ def check():
     else:
         return jsonify({"code": 200, "exists": False})
 
+@app.route("/get_users", methods = ["POST"])
+def get_users():
+    '''Returns the users logged in a room'''
+    room = request.form.get("room")
+    print(room)
+    if room not in rooms:
+        return "ERROR"
+    else:
+        users=rooms[room]["usrs"]
+        print(users)
+        stre = f"{list(users)}".replace('\'', '\"')
+        return stre
     
 # socketio events
 @socketio.on("join")
@@ -124,12 +138,13 @@ def join(data):
     # join room
     join_room(room)
     #add user to the list
-    rooms[room]["usrs"].add(usrname)
-    print(rooms)
     if room in rooms:
         if usrname in rooms[room]["usrs"]:
             #to not send the message
             return
+    rooms[room]["usrs"].add(usrname)
+    print(rooms)
+    
     #emit notification
     emit("new-user", {"msg": usrname + " has joined the room."}, room=room)
 
