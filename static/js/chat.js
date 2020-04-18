@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     socket.on("message", data => {
         const msg = data.msg;
         const usr = data.usr;
+        const hr = data.hr;
         let msg_template;
         // own user messages
         if(usr == usrname)
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
             '<div class="sent-msg">'+
                 '<div class="sent-msg-w">'+
                     '<p>{{ msg }}</p>'+
-                    '<span class="msg-info">{{ usr }}</span>'+
+                    '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
             '</div></div></div>');
         }
         // incoming messages
@@ -46,11 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
             '<div class="rec-msg">'+
                 '<div class="rec-msg-w">'+
                     '<p>{{ msg }}</p>'+
-                    '<span class="msg-info">{{ usr }}</span>'+
+                    '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
             '</div></div></div>');
         }
         // template processing
-        const element = msg_template({"msg": msg, "usr": usr});
+        const element = msg_template({"msg": msg, "usr": usr, "hr":hr});
         // add to div
         let msg_box = document.querySelector("#msgs");
         msg_box.innerHTML += element;

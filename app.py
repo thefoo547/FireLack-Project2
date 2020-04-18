@@ -4,6 +4,8 @@ from flask_session import Session
 from tempfile import mkdtemp
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 
+import time
+
 from models import Message
 
 #app config
@@ -76,7 +78,14 @@ def chat():
         return error("You are not logged in")
     else:
         #getting the messages
-        messages = rooms[session["room"]]["msgs"]
+        n=len(rooms[session["room"]]["msgs"])
+        #if there are less than 20 messages
+        if n <= 20:
+            #get all
+            messages = rooms[session["room"]]["msgs"]
+        else:
+            #if not, get only the last 20
+            messages = rooms[session["room"]]["msgs"][n-20:]
         users = rooms[session["room"]]["usrs"]
         print(users)
         return render_template("chat.htm", usrname=session["usrname"], room=session["room"], messages=messages, users=users)
@@ -133,8 +142,7 @@ def join(data):
     #ask for the data
     usrname = data["usrname"]
     room = data["room"]
-    #for the functioning of javascript, i have to check if the user is already in
-    
+
     # join room
     join_room(room)
     #add user to the list
@@ -174,8 +182,16 @@ def message(data):
     usr = data["usr"]
     room = data["room"]
     msg = data["msg"]
+    hr = str(time.strftime('%b-%d %I:%M%p', time.localtime()))
     #add the message to the list
-    rooms[room]["msgs"].append(Message(usr, msg))
+    #limit the messages list to 100
+    if len(rooms[room]["msgs"]) <= 100: 
+        rooms[room]["msgs"].append(Message(usr, msg, hr))
+    else:
+        #remove the last message
+        rooms[room]["msgs"].pop(0)
+        #add the new one
+        rooms[room]["msgs"].append(Message(usr, msg, hr))
     print(rooms)
     #emit message
-    emit("message", {"msg": msg, "usr": usr}, room=room)
+    emit("message", {"msg": msg, "usr": usr, "hr": hr}, room=room)
