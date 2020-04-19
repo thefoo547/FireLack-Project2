@@ -52,13 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     '<p>{{ msg }}</p>'+
                     '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
             '</div></div></div>');
+            
+            playNewmsg();
         }
         // template processing
         const element = msg_template({"msg": msg, "usr": usr, "hr":hr});
         // add to div
         let msg_box = document.querySelector("#msgs");
         msg_box.innerHTML += element;
-        playNewmsg();
         //scroll on bottom
         msg_box.scrollTop = msg_box.scrollHeight;
 
