@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
         '<span class="text-center user-notif">{{ msg }}</span>'+
         '</div>');
         const element = notif_template({"msg" : msg});
-        console.log(element);
         document.querySelector("#msgs").innerHTML += element;
         update_users();
     });
@@ -86,21 +85,17 @@ document.addEventListener("DOMContentLoaded", () => {
     function update_users(){
         const req=new XMLHttpRequest();
         req.open("POST", "/get_users");
-        console.log("update users");
         req.onload = () => {
             const resp = req.responseText;
     
             if(resp != "ERROR")
             {
                 const data = JSON.parse(String(resp));
-                console.log(resp);
-                console.log(data);
                 let usr_template = Handlebars.compile('<a href="#" id="exit-btn"class="dropdown-item"><i class="icon-circle-notch mr-1"></i>{{user}}</a>'); 
                 let content = "";
                 data.forEach(user => {
                     const element = usr_template({"user": user});
                     content += element;
-                    console.log(content);
                 });
                 const user_list = document.querySelector("#user-list");
                 user_list.innerHTML = content;

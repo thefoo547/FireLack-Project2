@@ -5,6 +5,7 @@ from tempfile import mkdtemp
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 
 import time
+import json
 
 from models import Message
 
@@ -87,7 +88,6 @@ def chat():
             #if not, get only the last 20
             messages = rooms[session["room"]]["msgs"][n-20:]
         users = rooms[session["room"]]["usrs"]
-        print(users)
         return render_template("chat.htm", usrname=session["usrname"], room=session["room"], messages=messages, users=users)
 
 @app.errorhandler(404)
@@ -127,15 +127,36 @@ def check_room():
 def get_users():
     '''Returns the users logged in a room'''
     room = request.form.get("room")
-    print(room)
     if room not in rooms:
         return "ERROR"
     else:
         users=rooms[room]["usrs"]
-        print(users)
         stre = f"{list(users)}".replace('\'', '\"')
         return stre
-    
+
+@app.route("/get_messages", methods=["POST"])
+def get_messages():
+    room = request.form.get("room")
+    start = int(request.form.get("start"))
+    end = int(request.form.get("end"))
+
+    r_len = len(rooms[room]["msgs"])
+
+    if r_len < 20 :
+        return []
+
+    sl_end = 0 if(start>=r_len) else r_len-start
+    sl_start = 0 if(end>=r_len) else r_len-end
+
+    msgs = rooms[room]["msgs"][sl_start:sl_end]
+
+    smsgs = []
+
+    for msg in msgs:
+        smsgs.append(json.dumps(msg.__dict__))
+
+    return jsonify(smsgs)
+
 # socketio events
 @socketio.on("join")
 def join(data):
@@ -151,8 +172,6 @@ def join(data):
             #to not send the message
             return
     rooms[room]["usrs"].add(usrname)
-    print(rooms)
-    
     #emit notification
     emit("new-user", {"msg": usrname + " has joined the room."}, room=room)
 
@@ -172,7 +191,6 @@ def leave(data):
     #remove the session
     del session["usrname"]
     del session["room"]
-    print(rooms)
     #emit notification
     emit("new-user", {"msg": usrname + " has left the room."}, room=room)
 
@@ -192,6 +210,5 @@ def message(data):
         rooms[room]["msgs"].pop(0)
         #add the new one
         rooms[room]["msgs"].append(Message(usr, msg, hr))
-    print(rooms)
     #emit message
     emit("message", {"msg": msg, "usr": usr, "hr": hr}, room=room)
