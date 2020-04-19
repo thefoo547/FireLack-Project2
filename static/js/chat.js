@@ -20,8 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
         '<span class="text-center user-notif">{{ msg }}</span>'+
         '</div>');
         const element = notif_template({"msg" : msg});
-        document.querySelector("#msgs").innerHTML += element;
+        let msg_box = document.querySelector("#msgs");
+        msg_box.innerHTML += element;
         update_users();
+        playNewusr();
+        //scroll on bottom
+        msg_box.scrollTop = msg_box.scrollHeight;
     });
 
     socket.on("message", data => {
@@ -54,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // add to div
         let msg_box = document.querySelector("#msgs");
         msg_box.innerHTML += element;
+        playNewmsg();
         //scroll on bottom
         msg_box.scrollTop = msg_box.scrollHeight;
 
@@ -109,6 +114,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = new FormData();
         data.append("room", room);
         req.send(data)
+    }
+
+    //notification sounds
+    function playNewmsg(){
+        let sound = new Audio("/static/audio/newmsg.mp3");
+        sound.play();
+    }
+
+    function playNewusr(){
+        let sound = new Audio("/static/audio/newusr.mp3");
+        sound.play();
+    }
+
+    function playOutusr(){
+        let sound = new Audio("/static/audio/outusr.mp3");
+        sound.play();
     }
 });
 
