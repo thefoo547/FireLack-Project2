@@ -21,9 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    function load_msgs()
-    {
-        // return a little the scroll of the message box
+    function load_msgs() {
 
         const start = counter;
         // wil get 10 new messages
@@ -67,6 +65,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     '<p>{{ msg }}</p>'+
                     '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
             '</div></div></div>');
+        }
+        else if(usr == "NOTIF")
+        {
+            //prepend notifications
+            msg_template=Handlebars.compile('<div class="notif">'+
+            '<span class="text-center user-notif">{{ msg }}</span>'+
+            '</div>');
+            const comp=msg_template({"msg": msgtxt});
+            document.querySelector("#msgs").innerHTML = comp + document.querySelector("#msgs").innerHTML;
+            return;
         }
         // incoming messages
         else

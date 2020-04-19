@@ -28,6 +28,20 @@ document.addEventListener("DOMContentLoaded", () => {
         msg_box.scrollTop = msg_box.scrollHeight;
     });
 
+    socket.on("exit-user", data => {
+        const msg=data.msg;
+        const notif_template=Handlebars.compile('<div class="notif">'+
+        '<span class="text-center user-notif">{{ msg }}</span>'+
+        '</div>');
+        const element = notif_template({"msg" : msg});
+        let msg_box = document.querySelector("#msgs");
+        msg_box.innerHTML += element;
+        update_users();
+        playOutusr();
+        //scroll on bottom
+        msg_box.scrollTop = msg_box.scrollHeight;
+    });
+
     socket.on("message", data => {
         const msg = data.msg;
         const usr = data.usr;

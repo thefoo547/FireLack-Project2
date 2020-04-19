@@ -31,12 +31,7 @@ rooms = {}
 @app.route("/")
 def index():
     # if the user is not logged
-    try:
-        session["usrname"]
-
-        session["room"]
-        # redirect to login
-    except:
+    if "room" not in session or "usrname" not in session:
         return redirect(url_for("login"))
     else:
         # redirect to the previous chat
@@ -60,9 +55,10 @@ def login():
             users and a space for messages'''
             # usrs set, msgs list
             rooms[room]={"usrs": set(), "msgs": []}
-        #if the room exists and there is already a user with the same name in it
         
-        if usrname in rooms[room]["usrs"]:
+        #if the room exists and there is already a user with the same name in it
+        #NOTIF will be a reserved username for notifications
+        if usrname in rooms[room]["usrs"] or usrname == "NOTIF":
             return error("The user is already taken")
         
         #saving the room and the user in session
@@ -107,7 +103,8 @@ def check_user():
     #validate
     if room not in rooms:
         return jsonify({"code": 301})
-    if(usr in rooms[room]["usrs"]):
+    #NOTIF will be a reserved username for notifications
+    if(usr in rooms[room]["usrs"] or usr=="NOTIF"):
         return jsonify({"code": 200, "exists": True})
     else:
         return jsonify({"code": 200, "exists": False})
@@ -172,8 +169,11 @@ def join(data):
             #to not send the message
             return
     rooms[room]["usrs"].add(usrname)
+
+    notif = usrname + " has joined the room."
+    addmessage("NOTIF", room, notif)
     #emit notification
-    emit("new-user", {"msg": usrname + " has joined the room."}, room=room)
+    emit("new-user", {"msg": notif}, room=room)
 
 @socketio.on("leave")
 def leave(data):
@@ -184,15 +184,19 @@ def leave(data):
     leave_room(room)
     #remove the user from set
     rooms[room]["usrs"].discard(usrname)
+    notif =  usrname + " has left the room."
+    addmessage("NOTIF", room, notif)
     #if the rooms gets empty
     if len(rooms[room]["usrs"]) == 0:
         #remove it
+        print("deleted room")
         del rooms[room]
     #remove the session
     del session["usrname"]
     del session["room"]
+    print("deleted session")
     #emit notification
-    emit("new-user", {"msg": usrname + " has left the room."}, room=room)
+    emit("exit-user", {"msg":notif}, room=room)
 
 @socketio.on("message")
 def message(data):
@@ -200,6 +204,13 @@ def message(data):
     usr = data["usr"]
     room = data["room"]
     msg = data["msg"]
+    addmessage(usr, room, msg)
+    hr = str(time.strftime('%b-%d %I:%M%p', time.localtime()))
+    #emit message
+    emit("message", {"msg": msg, "usr": usr, "hr": hr}, room=room)
+
+#helpers
+def addmessage(usr, room, msg):
     hr = str(time.strftime('%b-%d %I:%M%p', time.localtime()))
     #add the message to the list
     #limit the messages list to 100
@@ -210,5 +221,3 @@ def message(data):
         rooms[room]["msgs"].pop(0)
         #add the new one
         rooms[room]["msgs"].append(Message(usr, msg, hr))
-    #emit message
-    emit("message", {"msg": msg, "usr": usr, "hr": hr}, room=room)

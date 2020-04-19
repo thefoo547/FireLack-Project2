@@ -67,6 +67,13 @@ document.addEventListener("DOMContentLoaded", function(){
             event.preventDefault();
             event.stopPropagation();
         }
+        if(usr == "NOTIF")
+        {
+            document.querySelector("#user-val-feedback").innerHTML = '"NOTIF" is not a valid username';
+            invalidate_field("#usrname-txt",true);
+            event.preventDefault();
+            event.stopPropagation();
+        }
         return false;
     });
 });

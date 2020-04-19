@@ -94,6 +94,10 @@
                         </div>
                     </div>
                 </div>
+            {%elif message.usr == "NOTIF"%}
+                <div class="notif">
+                    <span class="text-center user-notif">{{message.msg}}</span>
+                </div>
             {%else%}
                 <div class="in-msg">
                     <div class="rec-msg">
