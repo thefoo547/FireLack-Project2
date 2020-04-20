@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             msg_template = Handlebars.compile('<div class="out-msg"><div class="sent-msg"><div class="sent-msg-w">'+
                 '<p id="{{msg_id}}">{{msg}}</p>'+
-                '<span class="msg-info">{{usr}} | {{hr}} <button class="delete-btn" data-msgid="{{msg_id}}"> <i class="icon-trash-empty"></i> </button></span>'+
+                '<span class="msg-info">{{usr}} | {{hr}} <button class="delete-btn" data-msgid="{{msg_id}}"> <i class="icon-trash-empty"></i> Delete for all</button></span>'+
             '</div></div></div>');
         }
         else if(usr == "NOTIF")

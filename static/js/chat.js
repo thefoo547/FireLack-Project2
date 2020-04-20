@@ -11,6 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#send-btn").onclick = sendMsg;
 
+    document.addEventListener("click", evt => {
+        console.log("evt");
+        const element = evt.target;
+        if(element.className == "delete-btn"){
+            let msg_id = element.dataset.msgid;
+            if(msg_id == undefined || msg_id == null){
+                alert("ISE");
+            }else{
+                delete_msg(msg_id);
+            }
+        }
+    });
+
     joinRoom();
 
     //socketio events
@@ -54,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             msg_template = Handlebars.compile('<div class="out-msg"><div class="sent-msg"><div class="sent-msg-w">'+
                 '<p id="{{msg_id}}">{{msg}}</p>'+
-                '<span class="msg-info">{{usr}} | {{hr}} <button class="delete-btn" data-msgid="{{msg_id}}"> <i class="icon-trash-empty"></i> </button></span>'+
+                '<span class="msg-info">{{usr}} | {{hr}} <button class="delete-btn" data-msgid="{{msg_id}}"> <i class="icon-trash-empty"></i> Delete for all</button></span>'+
             '</div></div></div>');
         }
         // incoming messages
@@ -78,6 +91,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
+    socket.on("del-message", data=>{  
+        const msg_id = data.msg_id;
+        const element = document.querySelector("#"+msg_id);
+        if(element == null){
+            console.log("ISE");
+            return;
+        }
+        element.innerHTML = "This message has been deleted"
+    });
+
     //functions
     function joinRoom(){
         socket.emit("join", {'usrname': usrname, 'room':room});
@@ -99,6 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         // emit the message
         socket.emit("message", {"usr": usrname, "room": room, "msg":msg});
+    }
+
+    function delete_msg(msg_id){
+        socket.emit("del-message", {"usr": usrname, "room": room, "msg_id":msg_id});
     }
 
     function update_users(){
@@ -129,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
         data.append("room", room);
         req.send(data)
     }
+
 
     //notification sounds
     function playNewmsg(){

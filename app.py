@@ -17,7 +17,7 @@ app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08
 
 #session config
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
@@ -217,8 +217,35 @@ def message(data):
     #emit message
     emit("message", {"msg_id":msgid,"msg": msg, "usr": usr, "hr": hr}, room=room)
 
+@socketio.on("del-message")
+def del_message(data):
+    #get the data
+    usr = data["usr"]
+    room = data["room"]
+    msg_id = data["msg_id"]
+    #search the message
+    index = search_msgs(room, msg_id)
+    
+    #if not found, do nothing
+    if index < 0:
+        return
+    # get the message
+    msg = rooms[room]["msgs"][index]
+
+    #security protect, if is a message not from the same user, do nothing
+    if msg.usr != usr:
+        return
+    
+    #delete the message from the list
+    rooms[room]["msgs"].pop(index)
+
+    #send the event to room
+    emit("del-message", {"msg_id": msg_id}, room=room)
+    
+
 #helpers
 def addmessage(msgid, usr, room, msg, hr):
+    '''Add a new message to the list of a determined room'''
     #add the message to the list
     #limit the messages list to 100
     if len(rooms[room]["msgs"]) <= 100: 
@@ -227,4 +254,12 @@ def addmessage(msgid, usr, room, msg, hr):
         #remove the last message
         rooms[room]["msgs"].pop(0)
         #add the new one
-        rooms[room]["msgs"].append(Message(msgid, usr, msg, hr))
+        rooms[room]["msgs"].append(Message(str(msgid), usr, msg, hr))
+
+#i have to do linear search because i have to preserve the time order in the message list
+def search_msgs(room, msg_id):
+    '''Linear search in the message lists of a room for a particula msg_id'''
+    for i in range(len(rooms[room]["msgs"])):
+        if rooms[room]["msgs"][i].msg_id == msg_id:
+            return i
+    return -1

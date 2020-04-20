@@ -79,6 +79,12 @@ main .out-msg {
   margin: 8px 0 0;
 }
 
+.delete-btn {
+  border: none;
+  background: none;
+  color: #747474;
+}
+
 .type-msg {
   border-top: 1px solid #000;
   position: relative;
