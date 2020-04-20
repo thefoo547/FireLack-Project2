@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#send-btn").onclick = sendMsg;
 
     document.addEventListener("click", evt => {
-        console.log("evt");
         const element = evt.target;
         if(element.className == "delete-btn"){
             let msg_id = element.dataset.msgid;

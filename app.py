@@ -134,7 +134,7 @@ def get_users():
 
 @app.route("/get_messages", methods=["POST"])
 def get_messages():
-    print("in get messages")
+
     room = request.form.get("room")
     start = int(request.form.get("start"))
     end = int(request.form.get("end"))
@@ -149,15 +149,13 @@ def get_messages():
 
     msgs = rooms[room]["msgs"][sl_start:sl_end]
 
-    print(msgs)
+
 
     smsgs = []
 
     for msg in msgs:
-        print(msg.__dict__)
         smsgs.append(json.dumps(msg.__dict__))
 
-    print(smsgs)
 
     return jsonify(smsgs)
 
@@ -196,12 +194,10 @@ def leave(data):
     #if the rooms gets empty
     if len(rooms[room]["usrs"]) == 0:
         #remove it
-        print("deleted room")
         del rooms[room]
     #remove the session
     del session["usrname"]
     del session["room"]
-    print("deleted session")
     #emit notification
     emit("exit-user", {"msg":notif}, room=room)
 
