@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     socket.on("del-message", data=>{  
         const msg_id = data.msg_id;
-        const element = document.querySelector("#"+msg_id);
+        const element = document.getElementById(msg_id);
         if(element == null){
             console.log("ISE");
             return;

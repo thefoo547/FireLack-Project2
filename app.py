@@ -76,6 +76,9 @@ def chat():
         return error("You are not logged in")
     else:
         #getting the messages
+        if(session["room"] not in rooms):
+            return redirect(url_for("login"))
+        
         n=len(rooms[session["room"]]["msgs"])
         #if there are less than 20 messages
         if n <= 20:
