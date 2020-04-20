@@ -43,34 +43,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     socket.on("message", data => {
+        const msg_id = data.msg_id;
         const msg = data.msg;
         const usr = data.usr;
         const hr = data.hr;
         let msg_template;
         // own user messages
+        
         if(usr == usrname)
         {
-            msg_template = Handlebars.compile('<div class="out-msg">'+
-            '<div class="sent-msg">'+
-                '<div class="sent-msg-w">'+
-                    '<p>{{ msg }}</p>'+
-                    '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
+            msg_template = Handlebars.compile('<div class="out-msg"><div class="sent-msg"><div class="sent-msg-w">'+
+                '<p id="{{msg_id}}">{{msg}}</p>'+
+                '<span class="msg-info">{{usr}} | {{hr}} <button class="delete-btn" data-msgid="{{msg_id}}"> <i class="icon-trash-empty"></i> </button></span>'+
             '</div></div></div>');
         }
         // incoming messages
+        
         else
         {
-            msg_template = Handlebars.compile('<div class="in-msg">'+
-            '<div class="rec-msg">'+
-                '<div class="rec-msg-w">'+
-                    '<p>{{ msg }}</p>'+
-                    '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
+            msg_template = Handlebars.compile('<div class="in-msg"><div class="rec-msg"><div class="rec-msg-w">'+
+            '<p id="{{msg_id}}">{{msg}}</p>'+
+            '<span class="msg-info">{{usr}} | {{hr}}</span>'+
             '</div></div></div>');
             
             playNewmsg();
         }
         // template processing
-        const element = msg_template({"msg": msg, "usr": usr, "hr":hr});
+        const element = msg_template({"msg_id": msg_id ,"msg": msg, "usr": usr, "hr":hr});
         // add to div
         let msg_box = document.querySelector("#msgs");
         msg_box.innerHTML += element;

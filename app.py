@@ -5,6 +5,7 @@ from tempfile import mkdtemp
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 
 import time
+import uuid
 import json
 
 from models import Message
@@ -133,6 +134,7 @@ def get_users():
 
 @app.route("/get_messages", methods=["POST"])
 def get_messages():
+    print("in get messages")
     room = request.form.get("room")
     start = int(request.form.get("start"))
     end = int(request.form.get("end"))
@@ -140,17 +142,22 @@ def get_messages():
     r_len = len(rooms[room]["msgs"])
 
     if r_len < 20 :
-        return []
+        return "EMPTY"
 
     sl_end = 0 if(start>=r_len) else r_len-start
     sl_start = 0 if(end>=r_len) else r_len-end
 
     msgs = rooms[room]["msgs"][sl_start:sl_end]
 
+    print(msgs)
+
     smsgs = []
 
     for msg in msgs:
+        print(msg.__dict__)
         smsgs.append(json.dumps(msg.__dict__))
+
+    print(smsgs)
 
     return jsonify(smsgs)
 
@@ -171,7 +178,7 @@ def join(data):
     rooms[room]["usrs"].add(usrname)
 
     notif = usrname + " has joined the room."
-    addmessage("NOTIF", room, notif)
+    addmessage(uuid.uuid1(), "NOTIF", room, notif, time.strftime('%b-%d %I:%M%p', time.localtime()))
     #emit notification
     emit("new-user", {"msg": notif}, room=room)
 
@@ -185,7 +192,7 @@ def leave(data):
     #remove the user from set
     rooms[room]["usrs"].discard(usrname)
     notif =  usrname + " has left the room."
-    addmessage("NOTIF", room, notif)
+    addmessage(uuid.uuid1(), "NOTIF", room, notif, time.strftime('%b-%d %I:%M%p', time.localtime()))
     #if the rooms gets empty
     if len(rooms[room]["usrs"]) == 0:
         #remove it
@@ -204,20 +211,20 @@ def message(data):
     usr = data["usr"]
     room = data["room"]
     msg = data["msg"]
-    addmessage(usr, room, msg)
+    msgid = str(uuid.uuid1())
     hr = str(time.strftime('%b-%d %I:%M%p', time.localtime()))
+    addmessage(msgid, usr, room, msg, hr)
     #emit message
-    emit("message", {"msg": msg, "usr": usr, "hr": hr}, room=room)
+    emit("message", {"msg_id":msgid,"msg": msg, "usr": usr, "hr": hr}, room=room)
 
 #helpers
-def addmessage(usr, room, msg):
-    hr = str(time.strftime('%b-%d %I:%M%p', time.localtime()))
+def addmessage(msgid, usr, room, msg, hr):
     #add the message to the list
     #limit the messages list to 100
     if len(rooms[room]["msgs"]) <= 100: 
-        rooms[room]["msgs"].append(Message(usr, msg, hr))
+        rooms[room]["msgs"].append(Message(str(msgid) , usr, msg, hr))
     else:
         #remove the last message
         rooms[room]["msgs"].pop(0)
         #add the new one
-        rooms[room]["msgs"].append(Message(usr, msg, hr))
+        rooms[room]["msgs"].append(Message(msgid, usr, msg, hr))

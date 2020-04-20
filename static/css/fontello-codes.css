@@ -2,6 +2,7 @@
 .icon-logout:before { content: '\e800'; } /* '' */
 .icon-picture:before { content: '\e801'; } /* '' */
 .icon-user-outline:before { content: '\e802'; } /* '' */
+.icon-trash-empty:before { content: '\e803'; } /* '' */
 .icon-chat-empty:before { content: '\f0e6'; } /* '' */
 .icon-file-archive:before { content: '\f1c6'; } /* '' */
 .icon-circle-notch:before { content: '\f1ce'; } /* '' */

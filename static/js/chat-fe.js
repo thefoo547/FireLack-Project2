@@ -31,7 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const request = new XMLHttpRequest();
         request.open("POST", "/get_messages");
         request.onload = () => {
-            const data = JSON.parse(request.responseText);
+            const resptxt = request.responseText;
+            const data = (resptxt == "EMPTY")? [] : JSON.parse(resptxt);
             if (data.length<=0)
             {
                 counter -= 10;
@@ -52,18 +53,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const usrname=document.querySelector("#usrname").innerHTML;
         msg=JSON.parse(msg);
         let msg_template;
-
+        let msg_id=msg.msg_id
         let usr = msg.usr;
         let msgtxt= msg.msg;
         let hr = msg.timest;
 
         if(usr == usrname)
         {
-            msg_template = Handlebars.compile('<div class="out-msg">'+
-            '<div class="sent-msg">'+
-                '<div class="sent-msg-w">'+
-                    '<p>{{ msg }}</p>'+
-                    '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
+            msg_template = Handlebars.compile('<div class="out-msg"><div class="sent-msg"><div class="sent-msg-w">'+
+                '<p id="{{msg_id}}">{{msg}}</p>'+
+                '<span class="msg-info">{{usr}} | {{hr}} <button class="delete-btn" data-msgid="{{msg_id}}"> <i class="icon-trash-empty"></i> </button></span>'+
             '</div></div></div>');
         }
         else if(usr == "NOTIF")
@@ -79,14 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // incoming messages
         else
         {
-            msg_template = Handlebars.compile('<div class="in-msg">'+
-            '<div class="rec-msg">'+
-                '<div class="rec-msg-w">'+
-                    '<p>{{ msg }}</p>'+
-                    '<span class="msg-info">{{ usr }} | {{ hr }}</span>'+
+            msg_template = Handlebars.compile('<div class="in-msg"><div class="rec-msg"><div class="rec-msg-w">'+
+            '<p id="{{msg_id}}">{{msg}}</p>'+
+            '<span class="msg-info">{{usr}} | {{hr}}</span>'+
             '</div></div></div>');
         }
-        const comp=msg_template({"msg": msgtxt, "usr": usr, "hr":hr});
+        const comp=msg_template({"msg_id": msg_id, "msg": msgtxt, "usr": usr, "hr":hr});
         document.querySelector("#msgs").innerHTML = comp + document.querySelector("#msgs").innerHTML;
     }
 });
